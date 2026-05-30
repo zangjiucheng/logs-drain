@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun build ./src/main.tsx --outdir ./dist --watch --target browser",
-    "build": "bun run build.ts"
+    "dev": "node build.ts --watch",
+    "build": "node build.ts"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -14,6 +14,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "tailwindcss": "^4.1.0",
-    "@tailwindcss/cli": "^4.1.0"
+    "@tailwindcss/cli": "^4.1.0",
+    "esbuild": "^0.25.0"
   }
 }

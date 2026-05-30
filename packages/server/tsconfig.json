@@ -5,8 +5,10 @@
     "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
-    "types": ["bun-types"],
-    "lib": ["ESNext"]
+    "types": ["node"],
+    "lib": ["ESNext", "DOM"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src/**/*.ts"]
 }

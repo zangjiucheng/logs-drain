@@ -1,12 +1,12 @@
-import { Database } from "bun:sqlite";
+import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
 export type LogRow = { id: number; ts: number; message: string };
 
-export function openDb(path: string): Database {
+export function openDb(path: string): DatabaseSync {
   mkdirSync(dirname(path), { recursive: true });
-  const db = new Database(path);
+  const db = new DatabaseSync(path);
   db.exec("PRAGMA journal_mode = WAL;");
   db.exec("PRAGMA synchronous = NORMAL;");
   db.exec(`
@@ -21,7 +21,7 @@ export function openDb(path: string): Database {
   return db;
 }
 
-export function insertLog(db: Database, key: string, message: string): void {
+export function insertLog(db: DatabaseSync, key: string, message: string): void {
   db.prepare("INSERT INTO logs (key, message, ts) VALUES (?, ?, ?)").run(
     key,
     message,
@@ -29,8 +29,8 @@ export function insertLog(db: Database, key: string, message: string): void {
   );
 }
 
-export function listLogs(db: Database, key: string): LogRow[] {
+export function listLogs(db: DatabaseSync, key: string): LogRow[] {
   return db
     .prepare("SELECT id, ts, message FROM logs WHERE key = ? ORDER BY id ASC")
-    .all(key) as LogRow[];
+    .all(key) as unknown[] as LogRow[];
 }

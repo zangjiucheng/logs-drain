@@ -21,10 +21,12 @@ live refresh and in-memory text filtering.
 
 ## Tech stack
 
-- **Runtime:** Bun (monorepo, workspaces).
-- **Backend:** Bun's built-in HTTP server, plain REST. SQLite via `bun:sqlite`
-  (in-process, single file).
-- **Frontend:** React + Tailwind, bundled with Bun.
+- **Runtime:** Node.js 24 (monorepo, npm workspaces). TypeScript is run
+  directly via Node's built-in type stripping — no compile step.
+- **Backend:** Node's built-in `node:http` server, plain REST. SQLite via
+  `node:sqlite` (in-process, single file).
+- **Frontend:** React + Tailwind, bundled with esbuild (CSS via
+  `@tailwindcss/cli`).
 - **Packaging:** One Docker image. Backend serves both the API and the built
   frontend static assets on a single port.
 
@@ -33,11 +35,11 @@ live refresh and in-memory text filtering.
 ```
 /
 ├── package.json              # workspaces: ["packages/*"]
-├── bun.lockb
+├── package-lock.json
 ├── Dockerfile
 ├── SPEC.md
 └── packages/
-    ├── server/               # Bun HTTP server + SQLite
+    ├── server/               # node:http server + node:sqlite
     │   ├── package.json
     │   ├── src/
     │   │   ├── index.ts      # entry: HTTP server, routes
@@ -176,16 +178,16 @@ Single multi-stage image:
 
 1. **build stage** — install deps, build the frontend bundle into
    `packages/web/dist/`.
-2. **runtime stage** — copy `packages/server/`, the built `packages/web/dist/`,
-   and `node_modules` (or use `bun install --production`).
+2. **runtime stage** — copy `packages/server/` and the built
+   `packages/web/dist/` (the server has no runtime dependencies).
 
 Runtime:
 
 - `EXPOSE 12000`
-- `CMD ["bun", "run", "packages/server/src/index.ts"]`
+- `CMD ["node", "--disable-warning=ExperimentalWarning", "packages/server/src/index.ts"]`
 - `VOLUME ["/data"]`
-- Server listens on `0.0.0.0:12000`. Port is hardcoded to `12000` (no env
-  override needed for v1).
+- Server listens on `0.0.0.0:12000`. Port defaults to `12000`, overridable via
+  the `PORT` env var.
 - DB path hardcoded to `/data/logs.db`.
 
 Run:

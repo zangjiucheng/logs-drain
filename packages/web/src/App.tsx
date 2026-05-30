@@ -9,7 +9,7 @@ function useLocationPath(): string {
     window.addEventListener("popstate", onPop);
     // Light-weight pushState patch so navigate() can update without reload.
     const origPush = history.pushState;
-    history.pushState = function (...args) {
+    history.pushState = function (this: History, ...args) {
       const ret = origPush.apply(this, args);
       setPath(window.location.pathname);
       return ret;
