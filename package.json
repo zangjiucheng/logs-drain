@@ -2,24 +2,11 @@
   "name": "logs-drain",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=24"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
-    "dev:server": "npm run dev --workspace @logs-drain/server",
-    "dev:web": "npm run dev --workspace @logs-drain/web",
-    "build:web": "npm run build --workspace @logs-drain/web",
-    "start": "node --disable-warning=ExperimentalWarning packages/server/src/index.ts",
-    "type-check": "tsc -p packages/server/tsconfig.json && tsc -p packages/web/tsconfig.json"
-  },
-  "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "^5.7.0"
-  },
-  "dependencies": {
-    "test-package": "github:zangjiucheng/test-package"
+    "dev:server": "bun --cwd packages/server dev",
+    "dev:web": "bun --cwd packages/web dev",
+    "build:web": "bun --cwd packages/web build",
+    "start": "bun run packages/server/src/index.ts"
   }
 }
